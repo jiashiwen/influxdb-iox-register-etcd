@@ -51,6 +51,19 @@ pub struct RunConfig {
     /// object store config
     #[clap(flatten)]
     pub(crate) object_store_config: ObjectStoreConfig,
+
+    /// Node id.
+    #[clap(long = "node_id", env = "NODE_ID", default_value = "0", action)]
+    pub node_id: u64,
+
+    /// etcd_endpoint.
+    #[clap(
+        long = "etcd_endpoints",
+        env = "ETCD_ENDPOINTES",
+        default_value = "127.0.0.1:2379",
+        action
+    )]
+    pub etcd_endpoints: String,
 }
 
 impl RunConfig {
@@ -94,6 +107,8 @@ impl RunConfig {
         grpc_bind_address: SocketAddr,
         max_http_request_size: usize,
         object_store_config: ObjectStoreConfig,
+        node_id: u64,
+        etcd_endpoints: String,
     ) -> Self {
         Self {
             logging_config,
@@ -102,6 +117,8 @@ impl RunConfig {
             grpc_bind_address,
             max_http_request_size,
             object_store_config,
+            node_id,
+            etcd_endpoints,
         }
     }
 }

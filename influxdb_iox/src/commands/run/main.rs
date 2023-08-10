@@ -2,8 +2,10 @@ use std::sync::Arc;
 
 use ioxd_common::Service;
 use ioxd_common::{grpc_listener, http_listener, serve, server_type::CommonServerState};
+use itertools::Itertools;
 use observability_deps::tracing::{debug, error, info};
 use panic_logging::SendPanicsToTracing;
+use register_etcd::register::NodeInfo;
 use snafu::{ResultExt, Snafu};
 use tokio_util::sync::CancellationToken;
 
@@ -111,6 +113,29 @@ pub async fn main(
     let frontend_shutdown = CancellationToken::new();
 
     let mut serving_futures = Vec::new();
+
+    // etcd 注册node
+    println!("regist to meta server!!!");
+    let to_etcd = NodeInfo {
+        id: common_state.run_config().node_id,
+        grpc_addr: services[0].grpc_bind_address.to_string(),
+        http_addr: services[0].http_bind_address.unwrap().to_string(),
+        attribute: services[0].server_type.name().to_string(),
+    };
+
+    // let etcd_endpoint = vec!["116.198.36.86:2379".to_string()];
+    let endpoints = common_state
+        .run_config()
+        .etcd_endpoints
+        .split(",")
+        .collect_vec();
+
+    println!("{}", common_state.run_config().etcd_endpoints);
+
+    register_etcd::register_node(endpoints, &to_etcd)
+        .await
+        .unwrap();
+
     for service in services {
         let common_state = common_state.clone();
         // start them all in their own tasks so the servers run at the same time
@@ -121,6 +146,7 @@ pub async fn main(
             server_type,
         } = service;
         let server_type_name = format!("{server_type:?}");
+
         let handle = tokio::spawn(async move {
             let trace_exporter = common_state.trace_exporter();
             info!(?grpc_bind_address, ?server_type, "Binding gRPC services");

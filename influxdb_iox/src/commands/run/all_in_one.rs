@@ -353,6 +353,18 @@ pub struct Config {
         action
     )]
     pub exec_mem_pool_bytes: usize,
+
+    /// Node id.
+    #[clap(long = "node_id", env = "NODE_ID", default_value = "0", action)]
+    pub node_id: u64,
+
+    #[clap(
+        long = "etcd_endpoints",
+        env = "ETCD_ENDPOINTES",
+        default_value = "127.0.0.1:2379",
+        action
+    )]
+    pub etcd_endpoints: String,
 }
 
 impl Config {
@@ -383,6 +395,8 @@ impl Config {
             querier_max_concurrent_queries,
             exec_mem_pool_bytes,
             single_tenant_deployment,
+            node_id,
+            etcd_endpoints,
         } = self;
 
         // Determine where to store files (wal and possibly catalog
@@ -448,6 +462,8 @@ impl Config {
         let ingester_addresses =
             vec![IngesterAddress::from_str(&ingester_grpc_bind_address.to_string()).unwrap()];
 
+        let etcd_endpoints = etcd_endpoints.clone();
+        // 注册修改了此处
         let router_run_config = RunConfig::new(
             logging_config,
             tracing_config,
@@ -455,6 +471,8 @@ impl Config {
             router_grpc_bind_address,
             max_http_request_size,
             object_store_config,
+            node_id,
+            etcd_endpoints,
         );
 
         let querier_run_config = router_run_config

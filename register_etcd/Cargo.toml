@@ -1,0 +1,17 @@
+[package]
+name = "register_etcd"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+etcd-client = "0.11.1"
+tokio = { version = "1.29.1", features = ["full"] }
+serde = { version = "1.0.152", features = ["derive"] }
+serde_json = "1.0.93"
+serde_yaml = "0.9.17"
+anyhow = "^1"
+walkdir = "2.3.2"
+rand = "0.8.5"
+sysinfo = "0.28.0"

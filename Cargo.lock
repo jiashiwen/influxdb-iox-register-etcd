@@ -891,7 +891,7 @@ dependencies = [
  "object_store",
  "observability_deps",
  "snafu",
- "sysinfo 0.29.8",
+ "sysinfo 0.29.10",
  "tempfile",
  "test_helpers",
  "trace_exporters",
@@ -5836,9 +5836,9 @@ dependencies = [
 
 [[package]]
 name = "sysinfo"
-version = "0.29.8"
+version = "0.29.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d10ed79c22663a35a255d289a7fdcb43559fc77ff15df5ce6c341809e7867528"
+checksum = "0a18d114d420ada3a891e6bc8e96a2023402203296a47cdd65083377dad18ba5"
 dependencies = [
  "cfg-if",
  "core-foundation-sys",
@@ -6407,7 +6407,7 @@ dependencies = [
  "observability_deps",
  "parking_lot",
  "pin-project",
- "sysinfo 0.29.8",
+ "sysinfo 0.29.10",
  "tempfile",
  "test_helpers",
  "tokio",

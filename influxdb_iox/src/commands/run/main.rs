@@ -118,9 +118,11 @@ pub async fn main(
     println!("regist to meta server!!!");
     let to_etcd = NodeInfo {
         id: common_state.run_config().node_id,
-        grpc_addr: services[0].grpc_bind_address.to_string(),
+        // grpc_addr: services[0].grpc_bind_address.to_string(),
         http_addr: services[0].http_bind_address.unwrap().to_string(),
-        attribute: services[0].server_type.name().to_string(),
+        // attribute: services[0].server_type.name().to_string(),
+        rpc_addr: services[0].grpc_bind_address.to_string(),
+        status: 1,
     };
 
     // let etcd_endpoint = vec!["116.198.36.86:2379".to_string()];

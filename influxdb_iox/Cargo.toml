@@ -72,20 +72,23 @@ http = "0.2.9"
 home = "0.5.5"
 humantime = "2.1.0"
 itertools = "0.11.0"
-lazy_static = "1.4.0"
 libc = { version = "0.2" }
 num_cpus = "1.16.0"
 once_cell = { version = "1.18", features = ["parking_lot"] }
 rustyline = { version = "12.0", default-features = false, features = [
     "with-file-history",
 ] }
-serde = "1.0.183"
-serde_json = "1.0.104"
+serde = "1.0.185"
+serde_json = "1.0.105"
+
+
+tokio-stream = { version = "0.1", features = ["net"] }
 snafu = "0.7"
-tempfile = "3.7.1"
-thiserror = "1.0.44"
+
+tempfile = "3.8.0"
+thiserror = "1.0.47"
 tikv-jemalloc-ctl = { version = "0.5.4", optional = true }
-tokio = { version = "1.29", features = [
+tokio = { version = "1.32", features = [
     "macros",
     "net",
     "parking_lot",
@@ -95,7 +98,6 @@ tokio = { version = "1.29", features = [
     "time",
     "io-std",
 ] }
-tokio-stream = { version = "0.1", features = ["net"] }
 tokio-util = { version = "0.7.8", features = ["compat"] }
 tonic = { workspace = true }
 uuid = { version = "1", features = ["v4"] }

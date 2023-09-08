@@ -33,8 +33,7 @@ use generated_types::{
 };
 use iox_query::{
     exec::{
-        fieldlist::FieldList, seriesset::converter::Error as SeriesSetError,
-        ExecutionContextProvider, IOxSessionContext,
+        fieldlist::FieldList, seriesset::converter::Error as SeriesSetError, IOxSessionContext,
     },
     QueryCompletedToken, QueryNamespace, QueryText,
 };
@@ -1136,7 +1135,7 @@ async fn measurement_name_impl<N>(
     ctx: &IOxSessionContext,
 ) -> Result<StringValuesResponse>
 where
-    N: QueryNamespace + ExecutionContextProvider + 'static,
+    N: QueryNamespace + 'static,
 {
     let rpc_predicate_string = format!("{rpc_predicate:?}");
     let db_name = db_name.as_str();
@@ -1180,7 +1179,7 @@ async fn tag_keys_impl<N>(
     ctx: &IOxSessionContext,
 ) -> Result<StringValuesResponse>
 where
-    N: QueryNamespace + ExecutionContextProvider + 'static,
+    N: QueryNamespace + 'static,
 {
     let rpc_predicate_string = format!("{rpc_predicate:?}");
     let db_name = db_name.as_str();
@@ -1224,7 +1223,7 @@ async fn tag_values_impl<N>(
     ctx: &IOxSessionContext,
 ) -> Result<StringValuesResponse>
 where
-    N: QueryNamespace + ExecutionContextProvider + 'static,
+    N: QueryNamespace + 'static,
 {
     let rpc_predicate_string = format!("{rpc_predicate:?}");
 
@@ -1270,7 +1269,7 @@ async fn tag_values_grouped_by_measurement_and_tag_key_impl<N>(
     ctx: &IOxSessionContext,
 ) -> Result<Vec<TagValuesResponse>, Error>
 where
-    N: QueryNamespace + ExecutionContextProvider + 'static,
+    N: QueryNamespace + 'static,
 {
     // Extract the tag key predicate.
     // See https://docs.influxdata.com/influxdb/v1.8/query_language/explore-schema/#show-tag-values
@@ -1344,7 +1343,7 @@ async fn read_filter_impl<N>(
     ctx: &IOxSessionContext,
 ) -> Result<impl Stream<Item = Result<Frame, Error>>, Error>
 where
-    N: QueryNamespace + ExecutionContextProvider + 'static,
+    N: QueryNamespace + 'static,
 {
     let db_name = db_name.as_str();
 
@@ -1405,7 +1404,7 @@ async fn query_group_impl<N>(
     ctx: &IOxSessionContext,
 ) -> Result<impl Stream<Item = Result<Frame, Error>>>
 where
-    N: QueryNamespace + ExecutionContextProvider + 'static,
+    N: QueryNamespace + 'static,
 {
     let db_name = db_name.as_str();
 
@@ -1474,7 +1473,7 @@ async fn field_names_impl<N>(
     ctx: &IOxSessionContext,
 ) -> Result<FieldList>
 where
-    N: QueryNamespace + ExecutionContextProvider + 'static,
+    N: QueryNamespace + 'static,
 {
     let rpc_predicate_string = format!("{rpc_predicate:?}");
 
@@ -1513,7 +1512,7 @@ async fn materialise_measurement_names<N>(
     ctx: &IOxSessionContext,
 ) -> Result<BTreeSet<String>, Error>
 where
-    N: QueryNamespace + ExecutionContextProvider + 'static,
+    N: QueryNamespace + 'static,
 {
     use generated_types::{
         node::{Comparison, Type, Value},
@@ -1592,7 +1591,7 @@ async fn materialise_tag_keys<N>(
     ctx: &IOxSessionContext,
 ) -> Result<BTreeSet<String>, Error>
 where
-    N: QueryNamespace + ExecutionContextProvider + 'static,
+    N: QueryNamespace + 'static,
 {
     use generated_types::tag_key_predicate::Value;
 
@@ -1682,13 +1681,17 @@ pub trait ErrorLogger {
     fn log_if_error(self, context: &str) -> Self;
 
     /// Provided method to log an error via the `error!` macro
-    fn log_error<E: std::fmt::Debug>(context: &str, e: E) {
-        error!("Error {}: {:?}", context, e);
+    fn log_error<E: std::error::Error>(context: &str, e: E) {
+        error!(
+            %e,
+            context,
+            "error while processing InfluxRPC request",
+        );
     }
 }
 
 /// Implement logging for all results
-impl<T, E: std::fmt::Debug> ErrorLogger for Result<T, E> {
+impl<T, E: std::error::Error> ErrorLogger for Result<T, E> {
     fn log_if_error(self, context: &str) -> Self {
         if let Err(e) = &self {
             Self::log_error(context, e);
@@ -3568,28 +3571,24 @@ mod tests {
             tag_key_meta_names: TagKeyMetaNames::Text as i32,
         };
 
+        let expected_message = "No function matches the given name and argument types 'AVG(Utf8)'";
+
         let tonic_status = storage_client
             .read_window_aggregate(request)
             .await
             .unwrap_err();
-        assert!(tonic_status
-            .message()
-            .contains("Avg does not support inputs of type Utf8"));
+        assert_contains!(tonic_status.message(), expected_message);
         assert_eq!(tonic::Code::InvalidArgument, tonic_status.code());
 
         let mut rpc_status = GrpcStatus::decode(tonic_status.details()).unwrap();
-        assert!(rpc_status
-            .message
-            .contains("Avg does not support inputs of type Utf8"));
+        assert_contains!(rpc_status.message, expected_message);
         assert_eq!(tonic::Code::InvalidArgument as i32, rpc_status.code);
         assert_eq!(1, rpc_status.details.len());
 
         let detail = rpc_status.details.pop().unwrap();
         let influx_err = InfluxDbError::decode(detail.value).unwrap();
         assert_eq!("invalid", influx_err.code);
-        assert!(influx_err
-            .message
-            .contains("Avg does not support inputs of type Utf8"));
+        assert_contains!(influx_err.message, expected_message);
         assert_eq!("iox/influxrpc", influx_err.op);
         assert_eq!(None, influx_err.error);
     }

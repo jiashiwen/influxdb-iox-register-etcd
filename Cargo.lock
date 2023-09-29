@@ -807,15 +807,15 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "chrono"
-version = "0.4.26"
+version = "0.4.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ec837a71355b28f6556dbd569b37b3f363091c0bd4b2e735674521b4c5fd9bc5"
+checksum = "7f2c685bad3eb3d45a01354cedb7d5faa66194d1d58ba6e267a8de788f79db38"
 dependencies = [
  "android-tzdata",
  "iana-time-zone",
  "num-traits",
  "serde",
- "winapi",
+ "windows-targets 0.48.5",
 ]
 
 [[package]]
@@ -888,7 +888,7 @@ dependencies = [
  "humantime",
  "iox_catalog",
  "metric",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "snafu",
  "sysinfo 0.29.8",
@@ -995,7 +995,7 @@ dependencies = [
  "iox_time",
  "itertools 0.11.0",
  "metric",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "parking_lot",
  "parquet_file",
@@ -1051,7 +1051,7 @@ dependencies = [
  "iox_query",
  "iox_tests",
  "iox_time",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "parquet_file",
  "schema",
@@ -1418,7 +1418,7 @@ dependencies = [
  "lazy_static",
  "log",
  "num_cpus",
- "object_store",
+ "object_store 0.6.1",
  "parking_lot",
  "parquet",
  "percent-encoding",
@@ -1444,7 +1444,7 @@ dependencies = [
  "arrow-array",
  "chrono",
  "num_cpus",
- "object_store",
+ "object_store 0.6.1",
  "parquet",
  "sqlparser 0.36.1",
 ]
@@ -1461,7 +1461,7 @@ dependencies = [
  "futures",
  "hashbrown 0.14.0",
  "log",
- "object_store",
+ "object_store 0.6.1",
  "parking_lot",
  "rand",
  "tempfile",
@@ -1543,7 +1543,7 @@ dependencies = [
  "datafusion",
  "datafusion-common",
  "datafusion-expr",
- "object_store",
+ "object_store 0.6.1",
  "prost",
 ]
 
@@ -1567,7 +1567,7 @@ dependencies = [
  "async-trait",
  "datafusion",
  "futures",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "pin-project",
  "schema",
@@ -1995,7 +1995,7 @@ dependencies = [
  "humantime",
  "iox_catalog",
  "metric",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "once_cell",
  "parquet_file",
@@ -2433,7 +2433,7 @@ dependencies = [
  "generated_types",
  "influxdb_iox_client",
  "iox_catalog",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "parquet_file",
  "schema",
@@ -2581,7 +2581,7 @@ dependencies = [
  "mutable_batch",
  "nu-ansi-term 0.49.0",
  "num_cpus",
- "object_store",
+ "object_store 0.7.1",
  "object_store_metrics",
  "observability_deps",
  "once_cell",
@@ -2717,7 +2717,7 @@ dependencies = [
  "mutable_batch",
  "mutable_batch_lp",
  "mutable_batch_pb",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "once_cell",
  "parking_lot",
@@ -2789,7 +2789,7 @@ dependencies = [
  "metric",
  "mutable_batch_lp",
  "mutable_batch_pb",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "parquet_file",
  "prost",
@@ -2913,7 +2913,7 @@ dependencies = [
  "insta",
  "itertools 0.11.0",
  "metric",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "once_cell",
  "parking_lot",
@@ -2994,7 +2994,7 @@ dependencies = [
  "iox_time",
  "metric",
  "mutable_batch_lp",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "parquet_file",
  "schema",
@@ -3134,7 +3134,7 @@ dependencies = [
  "iox_time",
  "ioxd_common",
  "metric",
- "object_store",
+ "object_store 0.7.1",
  "querier",
  "service_grpc_catalog",
  "service_grpc_flight",
@@ -3165,7 +3165,7 @@ dependencies = [
  "ioxd_common",
  "metric",
  "mutable_batch",
- "object_store",
+ "object_store 0.7.1",
  "router",
  "thiserror",
  "tokio",
@@ -3807,16 +3807,37 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "27c776db4f332b571958444982ff641d2531417a326ca368995073b639205d58"
 dependencies = [
  "async-trait",
+ "bytes",
+ "chrono",
+ "futures",
+ "humantime",
+ "itertools 0.10.5",
+ "parking_lot",
+ "percent-encoding",
+ "snafu",
+ "tokio",
+ "tracing",
+ "url",
+ "walkdir",
+]
+
+[[package]]
+name = "object_store"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f930c88a43b1c3f6e776dfe495b4afab89882dbc81530c632db2ed65451ebcb4"
+dependencies = [
+ "async-trait",
  "base64 0.21.2",
  "bytes",
  "chrono",
  "futures",
  "humantime",
  "hyper",
- "itertools 0.10.5",
+ "itertools 0.11.0",
  "parking_lot",
  "percent-encoding",
- "quick-xml 0.28.2",
+ "quick-xml 0.30.0",
  "rand",
  "reqwest",
  "ring",
@@ -3839,7 +3860,7 @@ dependencies = [
  "futures",
  "iox_time",
  "metric",
- "object_store",
+ "object_store 0.7.1",
  "pin-project",
  "snafu",
  "tokio",
@@ -3974,7 +3995,7 @@ dependencies = [
  "lz4",
  "num",
  "num-bigint",
- "object_store",
+ "object_store 0.6.1",
  "paste",
  "seq-macro",
  "snap",
@@ -3997,7 +4018,7 @@ dependencies = [
  "futures",
  "generated_types",
  "iox_time",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "parquet",
  "pbjson-types",
@@ -4024,7 +4045,7 @@ dependencies = [
  "influxdb-line-protocol",
  "mutable_batch_lp",
  "num_cpus",
- "object_store",
+ "object_store 0.7.1",
  "parquet_file",
  "schema",
  "snafu",
@@ -4519,7 +4540,7 @@ dependencies = [
  "iox_time",
  "metric",
  "mutable_batch_lp",
- "object_store",
+ "object_store 0.7.1",
  "object_store_metrics",
  "observability_deps",
  "parking_lot",
@@ -4571,9 +4592,9 @@ dependencies = [
 
 [[package]]
 name = "quick-xml"
-version = "0.28.2"
+version = "0.30.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ce5e73202a820a31f8a0ee32ada5e21029c81fd9e3ebf668a40832e4219d9d1"
+checksum = "eff6510e86862b57b210fd8cbe8ed3f0d7d600b9c2863cd4549a2e033c66e956"
 dependencies = [
  "memchr",
  "serde",
@@ -4810,7 +4831,7 @@ dependencies = [
  "mutable_batch",
  "mutable_batch_lp",
  "mutable_batch_pb",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "once_cell",
  "parking_lot",
@@ -5207,7 +5228,7 @@ dependencies = [
  "generated_types",
  "iox_catalog",
  "metric",
- "object_store",
+ "object_store 0.7.1",
  "observability_deps",
  "parquet_file",
  "tokio",
@@ -7005,7 +7026,7 @@ dependencies = [
  "nix",
  "nom",
  "num-traits",
- "object_store",
+ "object_store 0.7.1",
  "once_cell",
  "parking_lot",
  "parquet",
